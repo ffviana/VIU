@@ -26,5 +26,5 @@ def get_linkweight_per_hash_pair(node_pair, df):
 
 link_list = [node_pair + (get_linkweight_per_hash_pair(node_pair, df),) for node_pair in node_pairs]
 
-with open('{}link_list.pickle'.format(fpath.split('.csv')[0]), 'wb') as f:
+with open('{}_link_list.pickle'.format(fpath.split('.csv')[0]), 'wb') as f:
     pickle.dump(link_list, f)

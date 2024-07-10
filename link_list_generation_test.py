@@ -4,7 +4,7 @@ import pickle
 
 
 # Data paths
-n9_path = 'D:/FV/VIU/clean_data/9n_9ngranmarchaporlajusticia.csv'
+n9_path = 'D:/FV/Personal/VIU/clean_data/9n_9ngranmarchaporlajusticia.csv'
 
 n9_df = pd.read_csv(n9_path)
 n9_df['date'] =pd.to_datetime(n9_df.hour * 3600, unit='s')
@@ -18,7 +18,7 @@ def get_node_pairs(x):
     return result
 
 node_pairs = get_node_pairs(n9_example_nework_df.hashtag.unique())
-
+# node_pairs = get_node_pairs(n9_example_nework_df.user.unique())
 
 df = n9_example_nework_df.copy()
 
@@ -43,6 +43,11 @@ def get_linkweight_per_user_pair(node_pair, df):
     return link_weight
 
 link_list = [node_pair + (get_linkweight_per_user_pair(node_pair, df),) for node_pair in node_pairs[:5]]
+
+# Link list for bipartite graph
+
+bipartite_link_list_df = n9_example_nework_df.groupby(by=['user', 'hashtag'], as_index=False).size().sort_values(by='size', ascending=False)
+bipartite_link_list =  [tuple(row) for row in bipartite_link_list_df.values.tolist()]
 
 with open('D:/FV/VIU/clean_data/link_list_example.pickle', 'wb') as f:
     pickle.dump(link_list, f)
