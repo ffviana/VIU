@@ -1,0 +1,22 @@
+universe = docker
+docker_image = docker-registry.champalimaud.pt/python3.6:a0946dc7fe27f0649a4d717bbd0125b680c0b36a
+executable = shell.sh 
+arguments = centrality_calculator.py $(PER_HOUR_FILE) 
+
+per_hour_file_paths = $ENV(MY_AREA)/viu/clean_data/link_lists_after_cleaning/9n_436948_userNodes*.pickle'
+
+# File transfer
+transfer_input_files = centrality_calculator.py
+
+# Change according to your app needs
+request_cpus = 1
+request_memory = 4096
+request_gpus = 0
+
+# Logging
+stream_output = True
+output = output.$(Cluster).$(Process).txt
+error = error.$(Cluster).$(Process).txt
+log = log.$(Cluster).$(Process).txt
+
+queue PER_HOUR_FILE matching files $(per_hour_file_paths)
