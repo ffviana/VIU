@@ -43,7 +43,8 @@ nr_of_components = len(components)
 components = [list(comp) for comp in components]
 
 hour_dic = {}
-G_sub = G.subgraph(components[0])
+# G_sub = G.subgraph(components[0])
+G_sub = G
 hour_dic['degree'] = dict(G_sub.degree)
 hour_dic['degree_cent'] = nx.degree_centrality(G_sub)
 hour_dic['closeness_cent'] = nx.closeness_centrality(G_sub)
@@ -55,6 +56,10 @@ try:
     hour_dic['between_cent'] = nx.betweenness_centrality(G_sub, weight='weight')
 except:
     hour_dic['between_cent'] = np.nan
+try:
+    hour_dic['pagerank'] = nx.pagerank(G, alpha=0.85) 
+except:
+    hour_dic['pagerank'] = np.nan
 
 # Get database
 if database == '9n':
@@ -66,5 +71,5 @@ elif database == 'no':
 final_dic = {'9n': dic_9n,
              'noAlt': dic_noAlt}
 
-with open('D:/FV/Personal/VIU/clean_data/compGiant2_metrics_{}.pickle'.format(str_identifier), 'wb') as handle:
+with open('D:/FV/Personal/VIU/clean_data/comp_metrics_{}.pickle'.format(str_identifier), 'wb') as handle:
     pickle.dump(final_dic, handle, protocol=pickle.HIGHEST_PROTOCOL)

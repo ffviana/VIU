@@ -6,9 +6,9 @@ import pandas as pd
 import networkx as nx
 
 
-str_identifier = 'userNodes'
+# str_identifier = 'userNodes'
 # str_identifier = 'hashNodes'
-# str_identifier = 'bipartite'
+str_identifier = 'bipartite'
 
 folder_path = 'D:/FV/Personal/VIU/clean_data/link_lists_after_cleaning/*{}*'.format(str_identifier)
 
@@ -49,18 +49,15 @@ for file_path in tqdm(files, desc='Computing pageRank and k-core in {}'.format(s
     clean_link_arr = np.array(clean_link_list)
 
     G = nx.Graph()
+    
     G.add_weighted_edges_from(clean_link_list)
-
+    components = sorted(nx.connected_components(G), key=len, reverse=True)
+    G = G.subgraph(components[0])
     # get pagerank
     pr = nx.pagerank(G, alpha=0.85) # default alpha .85
 
     # get k-core
     kCore = nx.k_core(G)
-
-
-    components = sorted(nx.connected_components(G), key=len, reverse=True)
-
-    # components = [list(comp) for comp in components]
 
     hour_dic = {}
 
@@ -77,5 +74,5 @@ for file_path in tqdm(files, desc='Computing pageRank and k-core in {}'.format(s
     final_dic = {'9n': dic_9n,
                 'noAlt': dic_noAlt}
 
-with open('D:/FV/Personal/VIU/clean_data/pageRank_kCore_{}.pickle'.format(str_identifier), 'wb') as handle:
+with open('D:/FV/Personal/VIU/clean_data/pageRank_giantComp_{}.pickle'.format(str_identifier), 'wb') as handle:
     pickle.dump(final_dic, handle, protocol=pickle.HIGHEST_PROTOCOL)

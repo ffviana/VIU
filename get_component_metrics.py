@@ -24,7 +24,7 @@ complete_df = pd.DataFrame()
 dic_9n = {}
 dic_noAlt = {}
 
-for file_path in tqdm(files):
+for file_path in tqdm(files, desc='Centralites for '+ str_identifier):
     if '.csv' in file_path:
         continue
 
@@ -55,17 +55,21 @@ for file_path in tqdm(files):
 
     hour_dic = {}
     G_sub = G.subgraph(components[0])
-    hour_dic['degree'] = dict(G_sub.degree)
-    hour_dic['degree_cent'] = nx.degree_centrality(G_sub)
-    hour_dic['closeness_cent'] = nx.closeness_centrality(G_sub)
+    # hour_dic['degree'] = dict(G_sub.degree)
+    # hour_dic['degree_cent'] = nx.degree_centrality(G_sub)
+    # hour_dic['closeness_cent'] = nx.closeness_centrality(G_sub)
+    # try:
+    #     hour_dic['eigen_cent'] = nx.eigenvector_centrality(G_sub, max_iter=500, weight='weight')
+    # except:
+    #     hour_dic['eigen_cent'] = np.nan
+    # try:
+    #     hour_dic['between_cent'] = nx.betweenness_centrality(G_sub, weight='weight')
+    # except:
+    #     hour_dic['between_cent'] = np.nan
     try:
-        hour_dic['eigen_cent'] = nx.eigenvector_centrality(G_sub, max_iter=500, weight='weight')
+        hour_dic['pagerank'] = nx.betweenness_centrality(G_sub, weight='weight')
     except:
-        hour_dic['eigen_cent'] = np.nan
-    try:
-        hour_dic['between_cent'] = nx.betweenness_centrality(G_sub, weight='weight')
-    except:
-        hour_dic['between_cent'] = np.nan
+        hour_dic['pagerank'] = np.nan
 
     # Get database
     if database == '9n':
@@ -77,5 +81,5 @@ for file_path in tqdm(files):
 final_dic = {'9n': dic_9n,
              'noAlt': dic_noAlt}
 
-with open('D:/FV/Personal/VIU/clean_data/compGiant2_metrics_{}.pickle'.format(str_identifier), 'wb') as handle:
+with open('D:/FV/Personal/VIU/clean_data/compGiant_metrics_pagerank_{}.pickle'.format(str_identifier), 'wb') as handle:
     pickle.dump(final_dic, handle, protocol=pickle.HIGHEST_PROTOCOL)
